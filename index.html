@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Vinos Argentinos</title>
+</head>
+<body>
+  <h1>Vinos Argentinos</h1>
+
+  <!-- Buscador -->
+  <input type="text" id="buscador" placeholder="Buscar vino...">
+  <button onclick="buscarVinos()">Buscar</button>
+
+  <!-- Filtro por precio -->
+  <select id="filtroPrecio" onchange="filtrarPrecio()">
+    <option value="">Filtrar por precio</option>
+    <option value="1000">Menos de $5000</option>
+    <option value="1500">Menos de $10000</option>
+  </select>
+
+  <!-- Contenedor de productos -->
+  <div id="productos"></div>
+
+  <hr>
+
+  <!-- Carrito -->
+  <div id="carritoResumen">
+    <p>Productos: <span id="cantidad">0</span></p>
+    <p>Descuento: $<span id="descuento">0.00</span></p>
+    <p>Total: $<span id="total">0.00</span></p>
+    <button onclick="vaciarCarrito()">Salir del carrito</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
