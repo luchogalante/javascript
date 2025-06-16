@@ -14,8 +14,8 @@
   <!-- Filtro por precio -->
   <select id="filtroPrecio" onchange="filtrarPrecio()">
     <option value="">Filtrar por precio</option>
-    <option value="1000">Menos de $5000</option>
-    <option value="1500">Menos de $10000</option>
+    <option value="5000">Menos de $5.000</option>
+    <option value="10000">Menos de $10.000</option>
   </select>
 
   <!-- Contenedor de productos -->
@@ -23,14 +23,16 @@
 
   <hr>
 
-  <!-- Carrito -->
   <div id="carritoResumen">
+    <!-- Lista de productos del carrito -->
+    <div id="carrito"></div>
     <p>Productos: <span id="cantidad">0</span></p>
     <p>Descuento: $<span id="descuento">0.00</span></p>
     <p>Total: $<span id="total">0.00</span></p>
     <button onclick="vaciarCarrito()">Salir del carrito</button>
   </div>
 
+  <!-- JS -->
   <script src="app.js"></script>
 </body>
 </html>

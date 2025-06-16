@@ -12,15 +12,15 @@ const vinos = [
   { id: 10, nombre: "Amalaya Blanco Dulce", precio: 3900 },
 ];
 
-
-let carrito = [];
+// Recuperar carrito desde localStorage
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 // Mostrar productos
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("productos");
-  contenedor.innerHTML = ""; // Limpiar antes de renderizar
+  contenedor.innerHTML = "";
   lista.forEach((vino) => {
-    const descuento = vino.precio > 1200 ? 0.10 : 0; // 10% de descuento si > 1200
+    const descuento = vino.precio > 1200 ? 0.10 : 0;
     const precioFinal = vino.precio * (1 - descuento);
 
     const div = document.createElement("div");
@@ -41,13 +41,66 @@ function agregarAlCarrito(id) {
   if (vino) {
     const descuento = vino.precio > 1200 ? 0.10 : 0;
     const precioFinal = vino.precio * (1 - descuento);
-    carrito.push({ ...vino, precioFinal });
+
+    const index = carrito.findIndex(item => item.id === id);
+    if (index !== -1) {
+      carrito[index].cantidad += 1;
+    } else {
+      carrito.push({ ...vino, precio: precioFinal, cantidad: 1 });
+    }
+
     alert(`${vino.nombre} fue agregado al carrito.`);
+    guardarCarrito();
     calcularTotales();
+    renderizarCarrito();
   }
 }
 
-// Buscar por nombre
+// Guardar carrito
+function guardarCarrito() {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+// Vaciar carrito
+function vaciarCarrito() {
+  if (confirm("¿Estás seguro de que querés vaciar el carrito?")) {
+    carrito = [];
+    guardarCarrito();
+    calcularTotales();
+    renderizarCarrito();
+    alert("Carrito vacío.");
+  }
+}
+
+// Eliminar producto individual
+function eliminarProducto(id) {
+  carrito = carrito.filter(p => p.id !== id);
+  guardarCarrito();
+  calcularTotales();
+  renderizarCarrito();
+}
+
+// Renderizar carrito visualmente
+function renderizarCarrito() {
+  const contenedor = document.getElementById("carrito");
+  contenedor.innerHTML = "";
+
+  if (carrito.length === 0) {
+    contenedor.innerHTML = "<p>El carrito está vacío.</p>";
+    return;
+  }
+
+  carrito.forEach(p => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <p>${p.nombre} x${p.cantidad} - $${(p.precio * p.cantidad).toFixed(2)}
+      <button onclick="eliminarProducto(${p.id})">Eliminar</button></p>
+    `;
+    contenedor.appendChild(div);
+  });
+}
+
+// Buscar
 function buscarVinos() {
   const texto = document.getElementById("buscador").value.toLowerCase();
   const filtrados = vinos.filter(v => v.nombre.toLowerCase().includes(texto));
@@ -61,27 +114,18 @@ function filtrarPrecio() {
     const filtrados = vinos.filter(v => v.precio <= valor);
     mostrarProductos(filtrados);
   } else {
-    mostrarProductos(vinos); // Reset si no hay filtro
+    mostrarProductos(vinos);
   }
 }
 
-// Vaciar carrito
-function vaciarCarrito() {
-  if (confirm("¿Estás seguro de que querés salir del carrito?")) {
-    carrito = [];
-    calcularTotales();
-    alert("Carrito vacío.");
-  }
-}
-
-// Calcular el total
+// Calcular totales
 function calcularTotales() {
-  const cantidad = carrito.length;
-  let total = carrito.reduce((acc, p) => acc + p.precio, 0);
+  const cantidad = carrito.reduce((acc, p) => acc + p.cantidad, 0);
+  let total = carrito.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
   let descuento = 0;
 
   if (cantidad >= 3) {
-    descuento = total * 0.10; // 10% de descuento
+    descuento = total * 0.10;
   }
 
   const totalFinal = total - descuento;
@@ -90,8 +134,10 @@ function calcularTotales() {
   document.getElementById("total").innerText = totalFinal.toFixed(2);
   document.getElementById("descuento").innerText = descuento.toFixed(2);
 }
-// Iniciar
-document.addEventListener("DOMContentLoaded", () => {
-  mostrarProductos(vinos);
-});
+
+// Inicializar
+mostrarProductos(vinos);
+calcularTotales();
+renderizarCarrito();
+
 
