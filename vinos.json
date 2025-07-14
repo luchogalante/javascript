@@ -1,0 +1,12 @@
+[
+  { "id": 1, "nombre": "Rutini Malbec", "precio": 8900, "imagen": "rutini-malbec.jpg" },
+  { "id": 2, "nombre": "Luigi Bosca Cabernet Sauvignon", "precio": 8300, "imagen": "luigi-bosca.jpg" },
+  { "id": 3, "nombre": "Norton Reserva Malbec", "precio": 4900, "imagen": "norton-malbec.jpg" },
+  { "id": 4, "nombre": "Trumpeter Chardonnay", "precio": 5600, "imagen": "trumpeter-chardonnay.jpg" },
+  { "id": 5, "nombre": "Catena Zapata Malbec Argentino", "precio": 16500, "imagen": "catena-zapata.jpg" },
+  { "id": 6, "nombre": "Salentein Reserva Pinot Noir", "precio": 6100, "imagen": "salentein-pinot.jpg" },
+  { "id": 7, "nombre": "El Esteco Blend de Extremos", "precio": 7700, "imagen": "el-esteco.jpg" },
+  { "id": 8, "nombre": "Alma Negra Misterio", "precio": 7200, "imagen": "alma-negra.jpg" },
+  { "id": 9, "nombre": "Terrazas de los Andes Malbec", "precio": 6400, "imagen": "terrazas-malbec.jpg" },
+  { "id": 10, "nombre": "Amalaya Blanco Dulce", "precio": 3900, "imagen": "amalaya-blanco.jpg" }
+]

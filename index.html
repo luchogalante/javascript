@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Vinos Argentinos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Opcional: vincular style.css si deseas -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Vinos Argentinos</h1>
@@ -23,16 +26,19 @@
 
   <hr>
 
+  <!-- Carrito -->
   <div id="carritoResumen">
-    <!-- Lista de productos del carrito -->
     <div id="carrito"></div>
     <p>Productos: <span id="cantidad">0</span></p>
     <p>Descuento: $<span id="descuento">0.00</span></p>
     <p>Total: $<span id="total">0.00</span></p>
-    <button onclick="vaciarCarrito()">Salir del carrito</button>
+    <button onclick="vaciarCarrito()">Vaciar carrito</button>
   </div>
 
-  <!-- JS -->
+  <!-- Librería SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Script principal -->
   <script src="app.js"></script>
 </body>
 </html>

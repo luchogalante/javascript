@@ -1,35 +1,39 @@
-// Productos disponibles
-const vinos = [
-  { id: 1, nombre: "Rutini Malbec", precio: 8900 },
-  { id: 2, nombre: "Luigi Bosca Cabernet Sauvignon", precio: 8300 },
-  { id: 3, nombre: "Norton Reserva Malbec", precio: 4900 },
-  { id: 4, nombre: "Trumpeter Chardonnay", precio: 5600 },
-  { id: 5, nombre: "Catena Zapata Malbec Argentino", precio: 16500 },
-  { id: 6, nombre: "Salentein Reserva Pinot Noir", precio: 6100 },
-  { id: 7, nombre: "El Esteco Blend de Extremos", precio: 7700 },
-  { id: 8, nombre: "Alma Negra Misterio", precio: 7200 },
-  { id: 9, nombre: "Terrazas de los Andes Malbec", precio: 6400 },
-  { id: 10, nombre: "Amalaya Blanco Dulce", precio: 3900 },
-];
-
-// Recuperar carrito desde localStorage
+// Inicializar carrito desde localStorage o vacío
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// Mostrar productos
+// Variable global de vinos
+let vinos = [];
+
+// Fetch de vinos.json
+fetch('vinos.json')
+  .then(response => response.json())
+  .then(data => {
+    vinos = data;
+    mostrarProductos(vinos);
+    calcularTotales();
+    renderizarCarrito();
+  })
+  .catch(error => console.error('Error cargando vinos:', error));
+
+// Mostrar productos con imágenes y precios
 function mostrarProductos(lista) {
   const contenedor = document.getElementById("productos");
   contenedor.innerHTML = "";
-  lista.forEach((vino) => {
+  lista.forEach(vino => {
     const descuento = vino.precio > 1200 ? 0.10 : 0;
     const precioFinal = vino.precio * (1 - descuento);
 
     const div = document.createElement("div");
     div.innerHTML = `
-      <h3>${vino.nombre}</h3>
-      <p>Precio: <del>$${vino.precio.toFixed(2)}</del> <strong>$${precioFinal.toFixed(2)}</strong> ${descuento ? "<span style='color:green'>(10% OFF)</span>" : ""}
-      </p>
-      <button onclick="agregarAlCarrito(${vino.id})">Comprar</button>
-      <hr>
+      <img src="img/${vino.imagen}" alt="${vino.nombre}">
+      <div>
+        <h3>${vino.nombre}</h3>
+        <p>Precio: <del>$${vino.precio.toFixed(2)}</del> 
+        <strong>$${precioFinal.toFixed(2)}</strong> 
+        ${descuento ? "<span style='color:green'>(10% OFF)</span>" : ""}
+        </p>
+        <button onclick="agregarAlCarrito(${vino.id})">Comprar</button>
+      </div>
     `;
     contenedor.appendChild(div);
   });
@@ -49,27 +53,48 @@ function agregarAlCarrito(id) {
       carrito.push({ ...vino, precio: precioFinal, cantidad: 1 });
     }
 
-    alert(`${vino.nombre} fue agregado al carrito.`);
     guardarCarrito();
     calcularTotales();
     renderizarCarrito();
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Agregado al carrito',
+      text: `${vino.nombre} fue agregado.`,
+      timer: 1500,
+      showConfirmButton: false
+    });
   }
 }
 
-// Guardar carrito
+// Guardar carrito en localStorage
 function guardarCarrito() {
   localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// Vaciar carrito
+// Vaciar carrito con confirmación
 function vaciarCarrito() {
-  if (confirm("¿Estás seguro de que querés vaciar el carrito?")) {
-    carrito = [];
-    guardarCarrito();
-    calcularTotales();
-    renderizarCarrito();
-    alert("Carrito vacío.");
-  }
+  Swal.fire({
+    title: '¿Vaciar carrito?',
+    text: "Se eliminarán todos los productos.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, vaciar',
+    cancelButtonText: 'Cancelar'
+  }).then(result => {
+    if (result.isConfirmed) {
+      carrito = [];
+      guardarCarrito();
+      calcularTotales();
+      renderizarCarrito();
+      Swal.fire({
+        icon: 'success',
+        title: 'Carrito vacío',
+        timer: 1200,
+        showConfirmButton: false
+      });
+    }
+  });
 }
 
 // Eliminar producto individual
@@ -80,7 +105,7 @@ function eliminarProducto(id) {
   renderizarCarrito();
 }
 
-// Renderizar carrito visualmente
+// Mostrar carrito visualmente
 function renderizarCarrito() {
   const contenedor = document.getElementById("carrito");
   contenedor.innerHTML = "";
@@ -100,14 +125,14 @@ function renderizarCarrito() {
   });
 }
 
-// Buscar
+// Buscar vinos
 function buscarVinos() {
   const texto = document.getElementById("buscador").value.toLowerCase();
   const filtrados = vinos.filter(v => v.nombre.toLowerCase().includes(texto));
   mostrarProductos(filtrados);
 }
 
-// Filtro por precio
+// Filtrar vinos por precio
 function filtrarPrecio() {
   const valor = parseInt(document.getElementById("filtroPrecio").value);
   if (!isNaN(valor)) {
@@ -118,7 +143,7 @@ function filtrarPrecio() {
   }
 }
 
-// Calcular totales
+// Calcular totales y actualizar pantalla
 function calcularTotales() {
   const cantidad = carrito.reduce((acc, p) => acc + p.cantidad, 0);
   let total = carrito.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
@@ -134,10 +159,3 @@ function calcularTotales() {
   document.getElementById("total").innerText = totalFinal.toFixed(2);
   document.getElementById("descuento").innerText = descuento.toFixed(2);
 }
-
-// Inicializar
-mostrarProductos(vinos);
-calcularTotales();
-renderizarCarrito();
-
-
